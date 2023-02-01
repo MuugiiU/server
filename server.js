@@ -26,11 +26,11 @@ server.post ("/signup", (req, res) =>{
     res.status(201).json({message:"shine hereglegch amjilttai burtgelee"})
 });
    
-server.post("signin", (req,res)=>{
+server.post("/signin", (req,res)=>{
     const {id, email,password} =req.body;
     const data =fs.readFileSync("users.json","utf-8");
     const parsedData = JSON.parse(data);
-    const findUser = parsedData.users.find((find) =>user.id ===id);
+    const findUser = parsedData.users.find((user) =>user.id ===id);
     if (!findUser) {
         res.status(401).json({message:"Iim hereglegch oldsongui"})
     }
@@ -76,8 +76,8 @@ server.delete("/users/:id",(req,res)=>{
     const parsedData =JSON.parse(data)
     const findIndex =parsedData.users.findIndex((el)=>el.id ===id);
     parsedData.users.splice(findIndex,1);
-     fs.writeFileSync("users.json",JSON.stringify(parsedData))
-     req.status(201).json({message:`${id} tai hereglegch amjilttai ustlaa`})
+     fs.writeFileSync("users.json",JSON.stringify(parsedData));
+     res.status(201).json({message:`${id} tai hereglegch amjilttai ustlaa`})
 });
 server.listen(port, () => {
     console.log(`Server is running at ${port}`);
