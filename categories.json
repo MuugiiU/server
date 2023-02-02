@@ -1,0 +1,10 @@
+{"categories":[ { "title": "Beaches","imgURL": "./img/beach.png" },
+{ "title": "Deserts", "imgURL": "./img/deserts.png" },
+{ "title": "Mountains", "imgURL": "./img/mountain.png" },
+{ "title": "Iconic Cities", "imgURL": "./img/icons.png" },
+{ "title": "Houseboats", "imgURL": "./img/house.png" },
+{ "title": "Country side", "imgURL": "./img/country.png" },
+{ "title": "Camping", "imgURL": "./img/camping.png" },
+{ "title": "Castles", "imgURL": "./img/castles.png" },
+{ "title": "Skiing", "imgURL": "./img/skiing.png" },
+{ "title": "Tropical", "imgURL": "./img/tropical.png" }]}
