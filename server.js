@@ -3,6 +3,8 @@ const cors = require("cors");
 const fs = require("fs");
 const {v4:uuidv4}= require("uuid");
 const bcrypt = require("bcrypt");
+const { title } = require("process");
+const e = require("express");
 
 const port = 8010;
 const server=express();
@@ -86,8 +88,20 @@ server.delete("/users/:id",(req,res)=>{
 
 // ENd of Users
 
-
-categoriesback.post("/categories",(req,res)=>{
+// category start
+server.get("/categories",(req,res)=>{
+    fs.readFile("categories.json", "utf-8",(err,data)=>{
+        if(err) {
+            console.log("Файл уншихад алдаа гарлаа")
+            return;
+        }
+        console.log(data);
+        const parsedData =JSON.parse(data);
+        
+        res.status(201).json({categories: parsedData.categories})
+    })
+})
+server.post("/addCategories",(req,res)=>{
     const {title, imgURL }=req.body;
     const data =fs.readFileSync("categories.json","utf-8");
     const parsedData = JSON.parse(data);
@@ -96,9 +110,36 @@ categoriesback.post("/categories",(req,res)=>{
     const newCaterory ={id, title,imgURL}
     parsedData.categories.push(newCaterory);
     fs.writeFileSync("categories.json",JSON.stringify(parsedData));
-    res.status(201).json({message:"shine category amjilttai burtgelee"})
+    res.status(201).json({message:"шинэ category амжилттай бүртгэгдлэлээ"})
  
  })
+ server.get("/categories/:id", (req,res)=>{
+    const {id} =req.params;
+    const data =fs.readFileSync("categories.json","utf-8");
+    const parsedData =JSON.parse(data);
+    const categories = parsedData.categories.find((el)=>el.id===id || el.title ===title);
+    res.status(200).json({categories})
+})
+server.put("/categories/:id",(req,res)=>{
+    const {id} =req.params;
+    const {title}=req.body;
+    const data = fs.readFileSync("categories.json", "utf-8");
+    const parsedData = JSON.parse(data);
+    const findIndex = parsedData.users.findIndex((el)=>el.id===id);
+    parsedData.categories[findIndex].title =title;
+    fs.writeFileSync("categories.json",JSON.stringify(parsedData));
+    res.status(201).json({message:"шинэ  өгөгдөл амжилттай солигдлоо"})
+});
+server.delete("/categories/:id",(req,res)=>{
+    const {id}=req.params;
+    const{title}=req.params;
+    const data = fs.readFileSync("categories.json","utf-8");
+    const parsedData =JSON.parse(data)
+    const findIndex =parsedData.categories.findIndex((el)=>el.id ===id|| el.title ===title);
+    parsedData.categories.splice(findIndex,1);
+     fs.writeFileSync("categories.json",JSON.stringify(parsedData));
+     res.status(201).json({message:`${id} ${title}тай хэрэглэгч амжилттай устгагдлаа`})
+});
 
 
 server.listen(port, () => {
