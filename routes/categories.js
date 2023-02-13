@@ -19,25 +19,16 @@ router.post("/",(req,res)=>{
     }
 })
  router.get("/",(req,res)=>{
-    try{
-        const categoriesData=fs.readFileSync("categories.json","utf-8");
-        console.log("CC",categoriesData);
-        const data =JSON.parse(categoriesData);
-        console.log("DD",data);
-        const findIndex=data.categoriesData.findIndex((el)=>el.id===req.params.id)
-
-        if(findIndex===-1){
-            return res.status(404).json({message:"not found",data:null})
-        }
-        data.categoriesData[findIndex]={
-           ...data.categoriesData[findIndex],...req.body
-        },
-       fs.writeFileSync("categories.json",JSON.stringify(data));
-       res.status(200).json({message:"success",data:data.categoriesData[findIndex]}) 
-      
-    } catch (err){
-        return res.status(400).json ({message:err.message})
+  fs.readFile("categories.json", "utf-8",(err,data)=>{
+    if(err) {
+        console.log("Файл уншихад алдаа гарлаа")
+        return;
     }
+    console.log(data);
+    const parsedData =JSON.parse(data);
+    
+    res.status(201).json({categories: parsedData.categories})
+})
  })
  router.delete("/:id", (req, res) => {
     try {
