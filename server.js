@@ -6,142 +6,26 @@ const bcrypt = require("bcrypt");
 const { title } = require("process");
 const e = require("express");
 
+
+const usersRoute=require("./routes/users");
+const categoriesRoute=require("./routes/categories");
+const signinRoute=require("./routes/signin");
+const signupRoute=require("./routes/signup");
+
 const port = 8010;
 const server=express();
+
+// middlewares
 server.use (cors());
 server.use(express.json());
 server.get("/",(req,res)=>{
     res.send("хүсэлт амжилттай");
 });
-
-
-// ENd of Users
-
-server.post ("/signup", (req, res) =>{
-    const {name, role = "user",email, password} =req.body;
-    const data= fs.readFileSync("users.json", "utf-8");
-    const parsedData = JSON.parse(data);
-    const id = uuidv4();
-    const salted = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password,salted);
-    console.log(hashedPassword);
-     const newUser ={ id, name , role, email, password:hashedPassword
-    };
-    parsedData.users.push(newUser);
-    fs.writeFileSync("users.json",JSON.stringify(parsedData));
-    res.status(201).json({message:"шинэ хэрэглэгч амжилттай бүртгэлээ"})
-});
-   
-server.post("/signin", (req,res)=>{
-    const {id, email,password} =req.body;
-    const data =fs.readFileSync("users.json","utf-8");
-    const parsedData = JSON.parse(data);
-    const findUser = parsedData.users.find((user) =>user.email ===email);
-    if (!findUser) {
-        res.status(401).json({message:"Ийм хэрэглэгч олдсонгүй"})
-    }
-
-  const isCheck = bcrypt.compareSync(password,findUser.password);
-  if(isCheck){
-    res.status(200).json ({message:"амжилттай нэвтэрлэлээ", user:findUser});
-
-  } else {res.status(401).json({message:"имэйл эсвэл нууц үг буруу байна", user:null})} 
-}) 
-server.get("/users",(req,res)=>{
-    fs.readFile("users.json", "utf-8",(err,data)=>{
-        if(err) {
-            console.log("Файл уншихад алдаа гарлаа")
-            return;
-        }
-        console.log(data);
-        const parsedData =JSON.parse(data);
-        
-        res.status(201).json({users: parsedData.users})
-    })
-})
-server.get("/users/:id", (req,res)=>{
-    const {id} =req.params;
-    const data =fs.readFileSync("users.json","utf-8");
-    const parsedData =JSON.parse(data);
-    const user = parsedData.users.find((el)=>el.id===id);
-    res.status(200).json({user})
-})
-server.put("/users/:id",(req,res)=>{
-    const {id} =req.params;
-    const {name}=req.body;
-    const data = fs.readFileSync("users.json", "utf-8");
-    const parsedData = JSON.parse(data);
-    const findIndex = parsedData.users.findIndex((el)=>el.id===id);
-    parsedData.users[findIndex].name =name;
-    fs.writeFileSync("users.json",JSON.stringify(parsedData));
-    res.status(201).json({message:"шинэ хэрэглэгчийн өгөгдөл амжилттай солигдлоо"})
-});
-server.delete("/users/:id",(req,res)=>{
-    const {id}=req.params;
-    const data = fs.readFileSync("users.json","utf-8");
-    const parsedData =JSON.parse(data)
-    const findIndex =parsedData.users.findIndex((el)=>el.id ===id);
-    parsedData.users.splice(findIndex,1);
-     fs.writeFileSync("users.json",JSON.stringify(parsedData));
-     res.status(201).json({message:`${id} тай хэрэглэгч амжилттай уншлаа`})
-});
-
-// ENd of Users
-
-// category start
-server.get("/categories",(req,res)=>{
-    fs.readFile("categories.json", "utf-8",(err,data)=>{
-        if(err) {
-            console.log("Файл уншихад алдаа гарлаа")
-            return;
-        }
-        console.log(data);
-        const parsedData =JSON.parse(data);
-        
-        res.status(201).json({categories: parsedData.categories})
-    })
-})
-server.post("/addCategories",(req,res)=>{
-    const {title, imgURL }=req.body;
-    const data =fs.readFileSync("categories.json","utf-8");
-    const parsedData = JSON.parse(data);
-    const id = uuidv4();
-   
-    const newCaterory ={id, title,imgURL}
-    parsedData.categories.push(newCaterory);
-    fs.writeFileSync("categories.json",JSON.stringify(parsedData));
-    res.status(201).json({message:"шинэ category амжилттай бүртгэгдлэлээ"})
+server.use("/users",usersRoute);
+server.use("/categories",categoriesRoute);
+server.use("/signin",signinRoute);
+server.use("/signup",signupRoute);
  
- })
- server.get("/categories/:id", (req,res)=>{
-    const {id} =req.params;
-    const data =fs.readFileSync("categories.json","utf-8");
-    const parsedData =JSON.parse(data);
-    const categories = parsedData.categories.find((el)=>el.id===id || el.title ===title);
-    res.status(200).json({categories})
-})
-server.put("/categories/:id",(req,res)=>{
-    const {id} =req.params;
-    const {title}=req.body;
-    const data = fs.readFileSync("categories.json", "utf-8");
-    const parsedData = JSON.parse(data);
-    const findIndex = parsedData.users.findIndex((el)=>el.id===id);
-    parsedData.categories[findIndex].title =title;
-    fs.writeFileSync("categories.json",JSON.stringify(parsedData));
-    res.status(201).json({message:"шинэ  өгөгдөл амжилттай солигдлоо"})
-});
-server.delete("/categories/:id",(req,res)=>{
-    const {id}=req.params;
-    const{title}=req.params;
-    const data = fs.readFileSync("categories.json","utf-8");
-    const parsedData =JSON.parse(data)
-    const findIndex =parsedData.categories.findIndex((el)=>el.id ===id|| el.title ===title);
-    parsedData.categories.splice(findIndex,1);
-     fs.writeFileSync("categories.json",JSON.stringify(parsedData));
-     res.status(201).json({message:`${id} ${title}тай хэрэглэгч амжилттай устгагдлаа`})
-});
-
-
 server.listen(port, () => {
     console.log(`Сервер ажиллаж байна ${port}`);
   })
