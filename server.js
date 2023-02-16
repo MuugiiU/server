@@ -8,7 +8,7 @@ const e = require("express");
 
 const usersRoute = require("./routes/users");
 const categoriesRoute = require("./routes/categories");
-const datasRoute = require("./routes/datas");
+const datasRoute = require("./controllers/datas");
 
 const port = 8010;
 const server = express();

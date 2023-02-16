@@ -4,32 +4,34 @@ const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const router = Router();
 
-router.post("/", (req, res) => {
+const filePath="./travels.json";
+
+const createTravel=(req,res)=>{
   try {
-    const content = fs.readFileSync("datas.json", "utf-8");
+    const content = fs.readFileSync(filePath, "utf-8");
     console.log("con", content);
     const data = JSON.parse(content);
     console.log("Data", data.datas);
     const newDatas = { ...req.body };
     data.datas.push(newDatas);
-    fs.writeFileSync("datas.json", JSON.stringify(data));
+    fs.writeFileSync(filePath, JSON.stringify(data));
     res.status(201).json({ message: "Ajilttai uusgelee", data: newDatas });
   } catch (err) {
     return res.status(400).json({ message: err.message });
   }
-});
-router.get("/", (req, res) => {
+};
+const getTravel=((req, res) => {
   try {
-    const datas = fs.readFileSync("datas.json", "utf-8");
+    const datas = fs.readFileSync(filePath, "utf-8");
     const parsedData = JSON.parse(datas);
     res.status(201).json({ datas: parsedData.datas });
   } catch (error) {
     console.log("ERR", error);
   }
 });
-router.delete("/:id", (req, res) => {
+const deleteTravel=(req,res) => {
   try {
-    const datasData = fs.readFileSync("datas.json", "utf-8");
+    const datasData = fs.readFileSync(filePath, "utf-8");
     console.log("CC", datasData);
     const data = JSON.parse(datasData);
     console.log("DD", data);
@@ -40,10 +42,10 @@ router.delete("/:id", (req, res) => {
     }
     data.datasData = findArray;
 
-    fs.writeFileSync("datas.json", JSON.stringify(data));
+    fs.writeFileSync(filePath, JSON.stringify(data));
     res.status(200).json({ message: "success", data: deletedDatas });
   } catch (error) {
     return res.status(400).json({ message: err.message });
   }
-});
-module.exports = router;
+};
+module.exports = {createTravel,deleteTravel,getTravel}

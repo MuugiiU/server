@@ -1,57 +1,10 @@
 const {Router} =require("express");
-const fs = require("fs");
-const {v4:uuidv4} =require("uuid");
-const bcrypt=require ("bcrypt");
+
+const { createCategory,deleteCategory, getCategory } = require("../controllers/categories");
 const router =Router();
 
-router.post("/",(req,res)=>{
-    try {
-        const content=fs.readFileSync("categories.json","utf-8");
-        console.log("con", content);
-        const data =JSON.parse(content);
-        console.log("Data",data.categories);
-        const newData={...req.body}
-        data.categories.push(newData);
-        fs.writeFileSync("categories.json",JSON.stringify(data));
-        res.status(201).json({message:"Amjilttai uusgelee.", data:newData})    
-    } catch(err){
-        return res.status(400).json ({message:err.message});
-    }
-})
- router.get("/",(req,res)=>{
-  fs.readFile("categories.json", "utf-8",(err,data)=>{
-    if(err) {
-        console.log("Файл уншихад алдаа гарлаа")
-        return;
-    }
-    console.log(data);
-    const parsedData =JSON.parse(data);
-    
-    res.status(201).json({categories: parsedData.categories})
-})
- })
- router.delete("/:id", (req, res) => {
-    try {
-      const categoriesData = fs.readFileSync("categories.json", "utf-8");
-      console.log("CC", categoriesData);
-      const data = JSON.parse(categoriesData);
-      console.log("DD", data);
-      const findArr = data.categoriesData.filter((el) => el.id !== req.params.id);
-      const deletedCategory = data.categoriesData.find(
-        (el) => el.id === req.params.id
-      );
-  
-      if (!(findArr.length > 0)) {
-        return res.status(404).json({ message: "not found", data: null });
-      }
-  
-      data.categoriesData = findArr;
-  
-      fs.writeFileSync("categories.json", JSON.stringify(data));
-      res.status(200).json({ message: "success", data: deletedCategory });
-    } catch (error) {
-      return res.status(400).json({ message: err.message });
-    }
-  });
+router.post("/",createCategory)
+ router.get("/",getCategory)
+ router.delete("/:id", deleteCategory);
   //End of Category
   module.exports = router;
