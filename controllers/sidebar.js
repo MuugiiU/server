@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const filePath = "./data/sidebar.json";
+const filePath = "./data/travels.json";
 
 const getSidebar = (req, res) => {
   fs.readFile(filePath, "utf-8", (err, data) => {
@@ -11,11 +11,11 @@ const getSidebar = (req, res) => {
     console.log(data);
     const parsedData = JSON.parse(data);
 
-    res.status(201).json({ sidebar: parsedData.sidebar });
+    res.status(201).json({ travels: parsedData.travels });
   });
 };
 
-const updateCategory = (req, res) => {
+const updateSidebar = (req, res) => {
   const { id } = req.params;
   const { title } = req.body;
   const data = fs.readFileSync(filePath, "utf-8");
@@ -47,4 +47,4 @@ const deleteSidebar = (req, res) => {
     return res.status(400).json({ message: err.message });
   }
 };
-module.exports = { deleteSidebar, updateCategory, getSidebar };
+module.exports = { deleteSidebar, updateSidebar, getSidebar };
