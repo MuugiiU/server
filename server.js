@@ -8,7 +8,8 @@ const e = require("express");
 
 const usersRoute = require("./routes/users");
 const categoriesRoute = require("./routes/categories");
-const datasRoute = require("./controllers/datas");
+const travelsRoute = require("./routes/travels");
+const sidebarRoute = require("./routes/sidebar");
 
 const port = 8010;
 const server = express();
@@ -21,7 +22,8 @@ server.get("/", (req, res) => {
 });
 server.use("/users", usersRoute);
 server.use("/categories", categoriesRoute);
-server.use("/datas", datasRoute);
+server.use("/travels", travelsRoute);
+server.use("/sidebar", sidebarRoute);
 
 server.listen(port, () => {
   console.log(`Сервер ажиллаж байна ${port}`);

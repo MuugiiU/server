@@ -1,41 +1,49 @@
 const fs = require("fs");
-const {v4:uuidv4} =require("uuid");
-const bcrypt=require ("bcrypt");
+const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
 
+const filePath = "./data/categories.json";
 
-const filePath="./data/categories.json";
-
-const createCategory=(req,res)=>{
-    try {
-        const content=fs.readFileSync(filePath,"utf-8");
-        console.log("con", content);
-        const data =JSON.parse(content);
-        console.log("Data",data.categories);
-        const newData={...req.body}
-        data.categories.push(newData);
-        fs.writeFileSync(filePath,JSON.stringify(data));
-        res.status(201).json({message:"Amjilttai uusgelee.", data:newData})    
-    } catch(err){
-        return res.status(400).json ({message:err.message});
+const createCategory = (req, res) => {
+  try {
+    const content = fs.readFileSync(filePath, "utf-8");
+    console.log("con", content);
+    const data = JSON.parse(content);
+    console.log("Data", data.categories);
+    const newData = { ...req.body };
+    data.categories.push(newData);
+    fs.writeFileSync(filePath, JSON.stringify(data));
+    res.status(201).json({ message: "Amjilttai uusgelee.", data: newData });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+};
+const getCategory = (req, res) => {
+  fs.readFile(filePath, "utf-8", (err, data) => {
+    if (err) {
+      console.log("Файл уншихад алдаа гарлаа");
+      return;
     }
-}
-const getCategory=(req,res)=>{
-    fs.readFile(filePath, "utf-8",(err,data)=>{
-        if(err) {
-            console.log("Файл уншихад алдаа гарлаа")
-            return;
-        }
-        console.log(data);
-        const parsedData =JSON.parse(data);
-        
-        res.status(201).json({categories: parsedData.categories})
-    })
-}
+    console.log(data);
+    const parsedData = JSON.parse(data);
 
+    res.status(201).json({ categories: parsedData.categories });
+  });
+};
 
+const updateCategory = (req, res) => {
+  const { id } = req.params;
+  const { title } = req.body;
+  const data = fs.readFileSync(filePath, "utf-8");
+  const parsedData = JSON.parse(data);
+  const findIndex = parsedData.categories.findIndex((el) => el.id === id);
+  parsedData.categories[findIndex].title = title;
+  fs.writeFileSync(filePath, JSON.stringify(parsedData));
+  res.status(201).json({ message: "шинэ  өгөгдөл амжилттай солигдлоо" });
+};
 
-
-const deleteCategory=(req,res)=>{  try {
+const deleteCategory = (req, res) => {
+  try {
     const categoriesData = fs.readFileSync(filePath, "utf-8");
     console.log("CC", categoriesData);
     const data = JSON.parse(categoriesData);
@@ -55,5 +63,11 @@ const deleteCategory=(req,res)=>{  try {
     res.status(200).json({ message: "success", data: deletedCategory });
   } catch (error) {
     return res.status(400).json({ message: err.message });
-  }}
-  module.exports={ getCategory,createCategory,deleteCategory}
+  }
+};
+module.exports = {
+  getCategory,
+  createCategory,
+  deleteCategory,
+  updateCategory,
+};
