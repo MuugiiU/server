@@ -9,7 +9,7 @@ const e = require("express");
 const usersRoute = require("./routes/users");
 const categoriesRoute = require("./routes/categories");
 const travelsRoute = require("./routes/travels");
-const sidebarRoute = require("./routes/sidebar");
+const wishlistRoute = require("./routes/wishlist");
 
 const port = 8010;
 const server = express();
@@ -23,7 +23,7 @@ server.get("/", (req, res) => {
 server.use("/users", usersRoute);
 server.use("/categories", categoriesRoute);
 server.use("/travels", travelsRoute);
-server.use("/sidebar", sidebarRoute);
+server.use("/wishlist", wishlistRoute);
 
 server.listen(port, () => {
   console.log(`Сервер ажиллаж байна ${port}`);
