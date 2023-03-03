@@ -60,7 +60,7 @@ server.post("/", async(req,res)=>{
 })
 server.put("/:id", async(req,res)=>{
   const id =req.params.id;
- 
+   
    connection.query(`UPDATE azure_user SET name="${req.body.name}",ovog="${req.body.ovog}" WHERE aid=${id}`,(err,result)=>{
     if(err) {
       res.status(400).json({message:err.message})
