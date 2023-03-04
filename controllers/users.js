@@ -1,61 +1,85 @@
-const fs=require("fs");
-const {v4:uuidv4}=require("uuid");
-const bcrypt=require("bcrypt");
+const fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcrypt");
+const { config } = require("process");
 
+const getAllUsers =
+  ("/",
+  async (req, res) => {
+    connection.query("SELECT * FROM  users", (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+      res
+        .status(200)
+        .json({ message: "azure server huselt amjilttai", data: result });
+    });
+  });
 
-
-const filePath="./data/users.json";
-
-const getAllUsers=(req,res)=>{
-    fs.readFile(filePath, "utf-8",(err,data)=>{
-        if(err) {
-            console.log("Файл уншихад алдаа гарлаа")
-            return;
+const getUser =
+  ("/:id",
+  async (req, res) => {
+    const id = req.params.id;
+    connection.query(`SELECT * FROM users WHERE aid=${id}`, (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+      res.status(200).json({
+        message: "azure server huselt amjilttai" + req.params.id,
+        data: result,
+      });
+    });
+  });
+const createUser =
+  ("/",
+  async (req, res) => {
+    connection.query(
+      `INSERT INTO users VALUES(${req.body.aid},"${req.body.name}","${req.body.ovog}")`,
+      (err, result) => {
+        if (err) {
+          res.status(400).json({ message: err.message });
+          return;
         }
-        console.log(data);
-        const parsedData =JSON.parse(data);
-        
-        res.status(201).json({users: parsedData.users})
-    })
-}
-const getUser=(req,res)=>{
-    const { id } = req.params;
-    const data = fs.readFileSync(filePath, "utf-8");
-    const parsedData = JSON.parse(data);
-    const user = parsedData.users.find((el) => el.id === id);
-    res.status(200).json({ user });
-}
-const createUser=(req,res)=>{
-    const {name, role = "user",email, password} =req.body;
-    const data= fs.readFileSync(filePath, "utf-8");
-    const parsedData = JSON.parse(data);
-    const id = uuidv4();
-    const salted = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(password,salted);
-    console.log(hashedPassword);
-     const newUser ={ id, name , role, email, password:hashedPassword
-    };
-    parsedData.users.push(newUser);
-    fs.writeFileSync(filePath,JSON.stringify(parsedData));
-    res.status(201).json({message:"шинэ хэрэглэгч амжилттай бүртгэлээ"})
-}
-const updateUser=(req,res)=>{
-    const {id} =req.params;
-    const {name}=req.body;
-    const data = fs.readFileSync(filePath, "utf-8");
-    const parsedData = JSON.parse(data);
-    const findIndex = parsedData.users.findIndex((el)=>el.id===id);
-    parsedData.users[findIndex].name =name;
-    fs.writeFileSync(filePath,JSON.stringify(parsedData));
-    res.status(201).json({message:"шинэ хэрэглэгчийн өгөгдөл амжилттай солигдлоо"})
-}
-const deleteUser=(req,res)=>{
-    const {id}=req.params;
-    const data = fs.readFileSync(filePath,"utf-8");
-    const parsedData =JSON.parse(data)
-    const findIndex =parsedData.users.findIndex((el)=>el.id ===id);
-    parsedData.users.splice(findIndex,1);
-     fs.writeFileSync(filePath,JSON.stringify(parsedData));
-     res.status(201).json({message:`${id} тай хэрэглэгч амжилттай уншлаа`})
-}
-module.exports={getAllUsers,getUser,createUser,updateUser,deleteUser};
+        res
+          .status(200)
+          .json({ message: "azure server huselt amjilttai", data: result });
+      }
+    );
+  });
+const updateUser =
+  ("/:id",
+  async (req, res) => {
+    const id = req.params.id;
+
+    connection.query(
+      `UPDATE users SET name="${req.body.name}",ovog="${req.body.ovog}" WHERE aid=${id}`,
+      (err, result) => {
+        if (err) {
+          res.status(400).json({ message: err.message });
+          return;
+        }
+        res
+          .status(200)
+          .json({ message: "azure server huselt amjilttai", data: result });
+      }
+    );
+  });
+const deleteUser =
+  ("/:id",
+  async (req, res) => {
+    const id = req.params.id;
+
+    connection.query(`DELETE users  WHERE aid=${id}`, (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+      res
+        .status(200)
+        .json({ message: "azure server huselt amjilttai", data: result });
+    });
+  });
+
+module.exports = { getAllUsers, getUser, createUser, updateUser, deleteUser };

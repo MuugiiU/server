@@ -17,9 +17,7 @@ const server = express();
 // middlewares
 server.use(cors());
 server.use(express.json());
-server.get("/", (req, res) => {
-  res.send("хүсэлт амжилттай");
-});
+
 server.use("/users", usersRoute);
 server.use("/categories", categoriesRoute);
 server.use("/travels", travelsRoute);
