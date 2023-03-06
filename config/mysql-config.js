@@ -1,4 +1,4 @@
-import mysql from "mysql2";
+const mysql = require("mysql2");
 
 const connection = mysql.createConnection({
   host: "localhost",
@@ -7,4 +7,4 @@ const connection = mysql.createConnection({
   password: "",
   database: "Azure_travels_db",
 });
-export default connection;
+module.exports = { connection };

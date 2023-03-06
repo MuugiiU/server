@@ -1,11 +1,12 @@
 const express = require("express");
 const cors = require("cors");
+const mysql = require("mysql2");
 
 const { title } = require("process");
 const e = require("express");
 
 const usersRoute = require("./routes/users");
-const categoryRoute = require("./routes/category");
+const categoryRoute = require("./routes/categories");
 const travelsRoute = require("./routes/travels");
 const wishlistRoute = require("./routes/wishlist");
 

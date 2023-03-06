@@ -1,15 +1,12 @@
-const fs = require("fs");
-const { v4: uuidv4 } = require("uuid");
-const bcrypt = require("bcrypt");
-const connection = require("../config/mysql-config");
+const { connection } = require("../config/mysql-config");
 
-const convertTostr = (body) => {
+const convert = (body) => {
   const keys = Object.keys(body); // keys:["name", "ovog"]
   const values = Object.values(body); //["naraa","saraa"]
   const huvsaigch = keys.map((key) => `${key}='${body[key]}'`).join();
   return huvsaigch;
 };
-const updateQuery = convertTostr(body);
+// const updateQuery = convert(body);
 
 const getAllCaterory =
   ("/",
@@ -54,7 +51,7 @@ const createCategory =
 const updateCategory =
   ("/:id",
   async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params.id;
     connection.query(
       `UPDATE category SET ${updateQuery} WHERE id=${id}`,
       (err, result) => {
@@ -68,7 +65,7 @@ const updateCategory =
       }
     );
   });
-
+// const id = req.params.id;
 const deleteCategory =
   ("/:id",
   async (req, res) => {
