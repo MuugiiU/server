@@ -1,32 +1,40 @@
-const {Router}=require("express");
-const fs=require("fs");
-const bcrypt=require("bcrypt");
-const { deleteUser, updateUser, createUser, getUser, getAllUsers } = require("../controllers/users");
+const { Router } = require("express");
+const fs = require("fs");
+const bcrypt = require("bcrypt");
+const {
+  deleteUser,
+  updateUser,
+  createUser,
+  getUser,
+  getAllUsers,
+} = require("../controllers/users");
 
-const router =Router();
+const router = Router();
 
+router.post("/signin", (req, res) => {
+  const { id, email, password } = req.body;
+  const data = connection;
+  const parsedData = JSON.parse(data);
+  const findUser = parsedData.users.find((user) => user.email === email);
+  if (!findUser) {
+    res.status(401).json({ message: "Ийм хэрэглэгч олдсонгүй" });
+  }
 
-router.post("/signin", (req,res)=>{
-    const {id, email,password} =req.body;
-    const data =fs.readFileSync("./data/users.json","utf-8");
-    const parsedData = JSON.parse(data);
-    const findUser = parsedData.users.find((user) =>user.email ===email);
-    if (!findUser) {
-        res.status(401).json({message:"Ийм хэрэглэгч олдсонгүй"})
-    }
+  const isCheck = bcrypt.compareSync(password, findUser.password);
+  if (isCheck) {
+    res.status(200).json({ message: "амжилттай нэвтэрлэлээ", user: findUser });
+  } else {
+    res
+      .status(401)
+      .json({ message: "имэйл эсвэл нууц үг буруу байна", user: null });
+  }
+});
 
-  const isCheck = bcrypt.compareSync(password,findUser.password);
-  if(isCheck){
-    res.status(200).json ({message:"амжилттай нэвтэрлэлээ", user:findUser});
+router.post("/signup", createUser);
 
-  } else {res.status(401).json({message:"имэйл эсвэл нууц үг буруу байна", user:null})} 
-}) 
-
-router.post ("/signup", createUser)
-
-router.get("/",getAllUsers);
+router.get("/", getAllUsers);
 router.get("/:id", getUser);
-router.put("/:id",updateUser)
-router.delete("/:id",deleteUser)
-  
-module.exports=router
+router.put("/:id", updateUser);
+router.delete("/:id", deleteUser);
+
+module.exports = router;

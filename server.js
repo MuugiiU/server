@@ -1,13 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-const fs = require("fs");
-const { v4: uuidv4 } = require("uuid");
-const bcrypt = require("bcrypt");
+
 const { title } = require("process");
 const e = require("express");
 
 const usersRoute = require("./routes/users");
-const categoriesRoute = require("./routes/categories");
+const categoryRoute = require("./routes/category");
 const travelsRoute = require("./routes/travels");
 const wishlistRoute = require("./routes/wishlist");
 
@@ -19,7 +17,7 @@ server.use(cors());
 server.use(express.json());
 
 server.use("/users", usersRoute);
-server.use("/categories", categoriesRoute);
+server.use("/category", categoryRoute);
 server.use("/travels", travelsRoute);
 server.use("/wishlist", wishlistRoute);
 

@@ -7,3 +7,4 @@ const connection = mysql.createConnection({
   password: "",
   database: "Azure_travels_db",
 });
+export default connection;

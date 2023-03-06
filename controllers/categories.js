@@ -1,70 +1,87 @@
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
+const connection = require("../config/mysql-config");
 
-const filePath = "./data/categories.json";
-
-const createCategory = (req, res) => {
-  try {
-    const content = fs.readFileSync(filePath, "utf-8");
-    console.log("con", content);
-    const data = JSON.parse(content);
-    console.log("Data", data.categories);
-    const newData = { ...req.body };
-    data.categories.push(newData);
-    fs.writeFileSync(filePath, JSON.stringify(data));
-    res.status(201).json({ message: "Amjilttai uusgelee.", data: newData });
-  } catch (err) {
-    return res.status(400).json({ message: err.message });
-  }
+const convertTostr = (body) => {
+  const keys = Object.keys(body); // keys:["name", "ovog"]
+  const values = Object.values(body); //["naraa","saraa"]
+  const huvsaigch = keys.map((key) => `${key}='${body[key]}'`).join();
+  return huvsaigch;
 };
-const getCategory = (req, res) => {
-  fs.readFile(filePath, "utf-8", (err, data) => {
+const updateQuery = convertTostr(body);
+
+const getAllCaterory =
+  ("/",
+  async (req, result) => {
     if (err) {
-      console.log("Файл уншихад алдаа гарлаа");
+      res.status(400).json({ message: err.message });
       return;
     }
-    console.log(data);
-    const parsedData = JSON.parse(data);
-
-    res.status(201).json({ categories: parsedData.categories });
+    res.status(200).json({ message: "server huselt amjilttai", data: result });
   });
-};
-
-const updateCategory = (req, res) => {
-  const { id } = req.params;
-  const { title } = req.body;
-  const data = fs.readFileSync(filePath, "utf-8");
-  const parsedData = JSON.parse(data);
-  const findIndex = parsedData.categories.findIndex((el) => el.id === id);
-  parsedData.categories[findIndex].title = title;
-  fs.writeFileSync(filePath, JSON.stringify(parsedData));
-  res.status(201).json({ message: "шинэ  өгөгдөл амжилттай солигдлоо" });
-};
-
-const deleteCategory = (req, res) => {
-  try {
-    const categoriesData = fs.readFileSync(filePath, "utf-8");
-    console.log("CC", categoriesData);
-    const data = JSON.parse(categoriesData);
-    console.log("DD", data);
-    const findArr = data.categoriesData.filter((el) => el.id !== req.params.id);
-    const deletedCategory = data.categoriesData.find(
-      (el) => el.id === req.params.id
+const getCategory =
+  ("/:id",
+  async (req, res) => {
+    const id = req.params.id;
+    connection.query(`SELECT * FROM caregory WHERE id=${id}`, (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+      res
+        .status(200)
+        .json({ message: "azure server amjilttai" + id, data: result });
+    });
+  });
+const createCategory =
+  ("/",
+  async (req, res) => {
+    connection.query(
+      `INSERT INTO category VALUES(${updateQuery})`,
+      (err, result) => {
+        if (err) {
+          res.status(400).json({ message: err.message });
+          return;
+        }
+        res
+          .status(200)
+          .json({ message: "azure server huselt amjilttai", data: result });
+      }
     );
+  });
 
-    if (!(findArr.length > 0)) {
-      return res.status(404).json({ message: "not found", data: null });
-    }
+const updateCategory =
+  ("/:id",
+  async (req, res) => {
+    const { id } = req.params;
+    connection.query(
+      `UPDATE category SET ${updateQuery} WHERE id=${id}`,
+      (err, result) => {
+        if (err) {
+          res.status(400).json({ message: err.message });
+          return;
+        }
+        res
+          .status(200)
+          .json({ message: "azure server huselt amjilttai", data: result });
+      }
+    );
+  });
 
-    data.categoriesData = findArr;
-
-    fs.writeFileSync(filePath, JSON.stringify(data));
-    res.status(200).json({ message: "success", data: deletedCategory });
-  } catch (error) {
-    return res.status(400).json({ message: err.message });
-  }
-};
+const deleteCategory =
+  ("/:id",
+  async (req, res) => {
+    connection.query(`DELETE category WHERE id=${id}`, (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+      res
+        .status(200)
+        .json({ message: "server huselt amjilttai", data: result });
+    });
+  });
 module.exports = {
   getCategory,
   createCategory,

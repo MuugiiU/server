@@ -1,12 +1,11 @@
 const fs = require("fs");
-const { v4: uuidv4 } = require("uuid");
-const bcrypt = require("bcrypt");
-const { config } = require("process");
+
+const connection = require("./config/mysql-config");
 
 const getAllUsers =
   ("/",
   async (req, res) => {
-    connection.query("SELECT * FROM  users", (err, result) => {
+    connection.query(`SELECT * FROM  users`, (err, result) => {
       if (err) {
         res.status(400).json({ message: err.message });
         return;
@@ -21,13 +20,13 @@ const getUser =
   ("/:id",
   async (req, res) => {
     const id = req.params.id;
-    connection.query(`SELECT * FROM users WHERE aid=${id}`, (err, result) => {
+    connection.query(`SELECT * FROM users WHERE id=${id}`, (err, result) => {
       if (err) {
         res.status(400).json({ message: err.message });
         return;
       }
       res.status(200).json({
-        message: "azure server huselt amjilttai" + req.params.id,
+        message: "azure server huselt amjilttai",
         data: result,
       });
     });
@@ -36,7 +35,7 @@ const createUser =
   ("/",
   async (req, res) => {
     connection.query(
-      `INSERT INTO users VALUES(${req.body.aid},"${req.body.name}","${req.body.ovog}")`,
+      `INSERT INTO users VALUES(${updateQuery})`,
       (err, result) => {
         if (err) {
           res.status(400).json({ message: err.message });
@@ -48,13 +47,22 @@ const createUser =
       }
     );
   });
+//  update hiihdee huvisagchaar utgaa damjuulan objectees array bolgon map-aar guilgej bg heseg
+
+const convertTostr = (body) => {
+  const keys = Object.keys(body); // keys:["name", "ovog"]
+  const values = Object.values(body); //["naraa","saraa"]
+  const huvsaigch = keys.map((key) => `${key}='${body[key]}'`).join();
+  return huvsaigch;
+};
+const updateQuery = convertTostr(body);
 const updateUser =
   ("/:id",
   async (req, res) => {
     const id = req.params.id;
 
     connection.query(
-      `UPDATE users SET name="${req.body.name}",ovog="${req.body.ovog}" WHERE aid=${id}`,
+      `UPDATE users SET ${updateQuery} WHERE id=${id}`,
       (err, result) => {
         if (err) {
           res.status(400).json({ message: err.message });
@@ -71,7 +79,7 @@ const deleteUser =
   async (req, res) => {
     const id = req.params.id;
 
-    connection.query(`DELETE users  WHERE aid=${id}`, (err, result) => {
+    connection.query(`DELETE users  WHERE id=${id}`, (err, result) => {
       if (err) {
         res.status(400).json({ message: err.message });
         return;
