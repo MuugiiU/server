@@ -1,5 +1,5 @@
 {
-  "categories": [
+  "category": [
     { "title": "Beaches", "imgURL": "./img/beach.png" },
     { "title": "Deserts", "imgURL": "./img/deserts.png" },
     { "title": "Mountains", "imgURL": "./img/mountain.png" },
