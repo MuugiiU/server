@@ -31,9 +31,8 @@ console.log("Working");
 // insertIntoUser("users", insertData);
 
 const insertTravel = (travels, data) => {
-  //   return `INSERT INTO  users (id, name, email, password, role) VALUES ${data};`;
   connection.query(
-    `INSERT INTO travels (id,cat_id, title, images, category,price,location,day ) VALUES ${data};`,
+    `INSERT INTO travels (id,cat_id, title, images, detail,price,location,day ) VALUES ${data};`,
     (err, res) => {
       if (err) {
         console.log("EROR-----", err);
@@ -61,7 +60,7 @@ console.log(insertTravelData);
 // const insertCategory = (category, data) => {
 //   //   return `INSERT INTO  users (id, name, email, password, role) VALUES ${data};`;
 //   connection.query(
-//     `INSERT INTO category (id,title, image, cat_id ) VALUES ${data};`,
+//     `INSERT INTO category (id,title, image ) VALUES ${data};`,
 //     (err, res) => {
 //       if (err) {
 //         console.log("EROR-----", err);
@@ -77,8 +76,8 @@ console.log(insertTravelData);
 // const categorydatas = JSON.parse(contentCategory).category;
 
 // const insertCategoryData = categorydatas
-//   .map((data) => `(null, "${data.title}", "${data.imgURL}",${data.cat_id})`)
+//   .map((data) => `(null, "${data.title}", "${data.imgURL}")`)
 //   .join();
+// console.log(insertCategoryData);
 
 // insertCategory("category", insertCategoryData);
-// console.log(insertCategoryData);

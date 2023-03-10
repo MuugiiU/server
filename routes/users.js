@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
-const { getAllUsers } = require("../controllers/users");
+const { getAllUsers, createUser, getUser } = require("../controllers/users");
 
 const router = Router();
 
@@ -24,10 +24,10 @@ router.post("/signin", (req, res) => {
   }
 });
 
-// router.post("/signup", createUser);
+router.post("/signup", createUser);
 
 router.get("/", getAllUsers);
-// router.get("/:id", getUser);
+router.get("/:id", getUser);
 // router.put("/:id", updateUser);
 // router.delete("/:id", deleteUser);
 
