@@ -20,6 +20,9 @@ server.use("/category", categoryRoute);
 server.use("/travels", travelsRoute);
 server.use("/wishlist", wishlistRoute);
 
+server.get("/", (req, res) => {
+  res.send("Hello World");
+});
 server.listen(port, () => {
   console.log(`Сервер ажиллаж байна ${port}`);
 });

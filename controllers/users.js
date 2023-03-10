@@ -15,31 +15,41 @@ const getAllUsers = (req, res) => {
 
 const getUser = (req, res) => {
   const id = req.params.id;
-  connection.query(`SELECT * FROM users WHERE id='${id}'`, (err, result) => {
+  const query = `SELECT * FROM users WHERE id=?`;
+  connection.query(query, [id], (err, result) => {
     if (err) {
       res.status(400).json({ message: err.message });
       return;
     }
     res.status(200).json({
       message: "azure server huselt amjilttai",
-      data: result,
+      data: result[0],
     });
   });
 };
 const createUser = (req, res) => {
-  const body = req.body;
-  const keys = Object.keys(body); // keys:["name", "ovog"]
-  const uusgegch = keys.map((key) => `${key}='${body[key]}'`).join();
+  // const body = req.body;
+  // const keys = Object.keys(body); // keys:["name", "ovog"]
+  // const uusgegch = keys.map((key) => `${key}='${body[key]}'`).join();
 
-  connection.query(`INSERT INTO users VALUES(${uusgegch})`, (err, result) => {
-    if (err) {
-      res.status(400).json({ message: err.message });
-      return;
+  const { name, email, password, phoneNumber } = req.body;
+  const salted = bcrypt.genSaltSync(10);
+  const hashedPassword = bcrypt.hashSync(password, salted);
+
+  const query = `INSERT INTO user (id, role, name, email, password, phone_number,profileImg) VALUES(null,?,?,?,?,?)`;
+  connection.query(
+    query,
+    [name, email, hashedPassword, phoneNumber, "url"],
+    (err, result) => {
+      if (err) {
+        res.status(400).json({ message: err.message });
+        return;
+      }
+      res
+        .status(200)
+        .json({ message: "azure server huselt amjilttai", data: result });
     }
-    res
-      .status(200)
-      .json({ message: "azure server huselt amjilttai", data: result });
-  });
+  );
 };
 
 const updateUser = (req, res) => {
