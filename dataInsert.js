@@ -30,32 +30,32 @@ console.log("Working");
 
 // insertIntoUser("users", insertData);
 
-const insertTravel = (travels, data) => {
-  connection.query(
-    `INSERT INTO travels (id,cat_id, title, images, detail,price,location,day ) VALUES ${data};`,
-    (err, res) => {
-      if (err) {
-        console.log("EROR-----", err);
-        return;
-      }
-      console.log("Success", res);
-    }
-  );
-};
+// const insertTravel = (travels, data) => {
+//   connection.query(
+//     `INSERT INTO travels (id, title, images, detail,price,location,day,cat_id) VALUES ${data};`,
+//     (err, res) => {
+//       if (err) {
+//         console.log("EROR-----", err);
+//         return;
+//       }
+//       console.log("Success", res);
+//     }
+//   );
+// };
 
-const contentTravel = fs.readFileSync("./data/travels.json", "utf-8");
+// const contentTravel = fs.readFileSync("./data/travels.json", "utf-8");
 
-const traveldatas = JSON.parse(contentTravel).travels;
+// const traveldatas = JSON.parse(contentTravel).travels;
 
-const insertTravelData = traveldatas
-  .map(
-    (data) =>
-      `(null, ${data.id}, "${data.title}", "${data.imgUTL}","${data.category}","${data.price}","${data.location}", "${data.day}")`
-  )
-  .join();
+// const insertTravelData = traveldatas
+//   .map(
+//     (data) =>
+//       `(null, "${data.title}", "${data.imgUTL}","${data.category}","${data.price}","${data.location}", "${data.day}", ${data.id})`
+//   )
+//   .join();
 
-insertTravel("travels", insertTravelData);
-console.log(insertTravelData);
+// insertTravel("travels", insertTravelData);
+// console.log(insertTravelData);
 
 // const insertCategory = (category, data) => {
 //   //   return `INSERT INTO  users (id, name, email, password, role) VALUES ${data};`;
