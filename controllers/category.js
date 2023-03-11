@@ -1,12 +1,14 @@
 const { connection } = require("../config/mysql-config");
 const { convertQueryStr } = require("../utils/convertQuery");
 
-const getAllCategory = (req, result) => {
-  if (err) {
-    res.status(400).json({ message: err.message });
-    return;
-  }
-  res.status(200).json({ message: "server huselt amjilttai", data: result });
+const getAllCategory = (req, res) => {
+  connection.query(`SELECT * FROM category`, (err, result) => {
+    if (err) {
+      res.status(400).json({ message: err.message });
+      return;
+    }
+    res.status(200).json({ message: "server huselt amjilttai", data: result });
+  });
 };
 
 const getCategory = (req, res) => {
@@ -16,9 +18,7 @@ const getCategory = (req, res) => {
       res.status(400).json({ message: err.message });
       return;
     }
-    res
-      .status(200)
-      .json({ message: "azure server amjilttai" + id, data: result });
+    res.status(200).json({ message: " server amjilttai", data: result });
   });
 };
 const createCategory = (req, res) => {
