@@ -1,5 +1,5 @@
 {
-  "categories": [
+  "category": [
     { "title": "Beaches", "imgURL": "./img/beach.png" },
     { "title": "Deserts", "imgURL": "./img/deserts.png" },
     { "title": "Mountains", "imgURL": "./img/mountain.png" },
@@ -11,7 +11,6 @@
     { "title": "Skiing", "imgURL": "./img/skiing.png" },
     { "title": "Tropical", "imgURL": "./img/tropical.png" },
     {
-      "id": "71885799-9043-43f5-9cb2-dd9897f5b76f",
       "title": "asiatravel",
       "imgURL": "imageURL"
     }
